@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "deepcutsclub"
+version = "0.1.0"
+description = ""
+authors = ["Noah Schill <noahrschill@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "^2.8.2"
+fastapi = "^0.111.1"
+Wikipedia-API = "^0.6.0"
+spacy = "^3.7.5"
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.26.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
