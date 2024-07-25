@@ -1,0 +1,193 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Deepcuts API",
+    "description": "An API to access music artist metadata and recommendations.",
+    "version": "v0.0.0"
+  },
+  "paths": {
+    "/albums/{artist_name}": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Get Album",
+        "description": "Get albums by artist name.",
+        "operationId": "Files-get_album",
+        "parameters": [
+          {
+            "name": "artist_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Artist Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAlbumsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Album": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "artists": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Artists"
+          },
+          "release_date": {
+            "type": "string",
+            "title": "Release Date"
+          },
+          "total_tracks": {
+            "type": "integer",
+            "title": "Total Tracks"
+          },
+          "tracks": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tracks"
+          },
+          "image": {
+            "$ref": "#/components/schemas/AlbumImageMetadata"
+          },
+          "spotify_url": {
+            "type": "string",
+            "title": "Spotify Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "artists",
+          "release_date",
+          "total_tracks",
+          "tracks",
+          "image",
+          "spotify_url"
+        ],
+        "title": "Album",
+        "description": "Schema for an album."
+      },
+      "AlbumImageMetadata": {
+        "properties": {
+          "height": {
+            "type": "integer",
+            "title": "Height"
+          },
+          "width": {
+            "type": "integer",
+            "title": "Width"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "height",
+          "width",
+          "url"
+        ],
+        "title": "AlbumImageMetadata",
+        "description": "Schema for album image metadata."
+      },
+      "GetAlbumsResponse": {
+        "properties": {
+          "albums": {
+            "items": {
+              "$ref": "#/components/schemas/Album"
+            },
+            "type": "array",
+            "title": "Albums"
+          }
+        },
+        "type": "object",
+        "required": [
+          "albums"
+        ],
+        "title": "GetAlbumsResponse",
+        "description": "Schema for an album_response."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
