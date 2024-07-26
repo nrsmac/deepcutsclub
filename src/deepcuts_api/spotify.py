@@ -20,8 +20,11 @@ sp = spotipy.Spotify(
 def get_albums_by_artist(artist_name: str, limit: int = 20) -> list[Album]:
     """Get albums by artist name from Spotify."""
     results = sp.search(q=artist_name, limit=limit, type="artist")
-    print(results.keys())
-    artist_id = results["artists"]["items"][0]["id"]
+    items = results["artists"]["items"]
+    if len(items) < 1:
+        return []
+
+    artist_id = items[0]["id"]
 
     albums = []
     for album in sp.artist_albums(artist_id)["items"]:

@@ -44,7 +44,3 @@ def test_get_albums_by_artist(client: TestClient, mock_spotify: None):
 
     response = client.get(f"/albums/{artist}")
     assert response.status_code == 200
-
-    # data = response.json()
-    # assert data == GetAlbumsResponse(albums=mj_albums)
-    # mock_spotify.get_albums_by_artist.assert_called_once_with(artist)
