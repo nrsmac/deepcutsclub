@@ -32,4 +32,3 @@ class GetAlbumsResponse(BaseModel):
     """Schema for an album_response."""
 
     albums: list[Album]
-
