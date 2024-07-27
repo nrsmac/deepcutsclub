@@ -9,7 +9,8 @@ authors = [{ name = "Noah Schill", email = "noahrschill@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-dependencies = ["fastapi", "pendulum", "pydantic-settings", "spotipy", "wikipedia-api", "scikit-learn", "pandas", "spacy", "python3-discogs-client"]
+# TODO group deps by feature
+dependencies = ["fastapi", "matplotlib", "plotly", "pendulum","loguru", "networkx", "pydantic-settings", "spotipy", "wikipedia-api", "scikit-learn", "pandas", "spacy", "python3-discogs-client"]
 classifiers = ["Programming Language :: Python :: 3"]
 keywords = ["one", "two"]
 

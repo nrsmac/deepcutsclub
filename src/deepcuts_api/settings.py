@@ -31,6 +31,15 @@ class SpotifySettings(BaseSettings):
     model_config = SettingsConfigDict(case_sensitive=False, env_file=".env", env_prefix="SPOTIFY_", extra="ignore")
 
 
+class DiscogsSettings(BaseSettings):
+    """Settings for the Discogs API."""
+
+    user_token: str = Field(...)
+    consumer: str = Field(...)
+    consumer_secret: str = Field(...)
+    model_config = SettingsConfigDict(case_sensitive=False, env_file=".env", env_prefix="DISCOGS_", extra="ignore")
+
+
 class Settings(BaseSettings):
     """Settings for the Deepcuts API."""
 
