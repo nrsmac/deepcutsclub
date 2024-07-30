@@ -139,6 +139,8 @@ if __name__ == "__main__":
         for album in my_albums
     }
     print(credits)
+    with open("my_album_credits.pkl", "wb") as handle:
+        pickle.dump(credits, handle)
 
     # Get core artists
     # core_artists = [get_album_credits(album) for album in albums]

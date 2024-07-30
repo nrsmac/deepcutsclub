@@ -91,7 +91,7 @@ def search_for_release(title: str, artist: str, per_page: int = 20) -> Album:
     return album
 
 
-def get_release_credits(release_id: int) -> list[Artist]:
+def get_release_credits(release_id: int) -> list[Artist]:  # TODO make this accept release objects and print name
     client = get_discogs_client()
     release = client.release(str(release_id))
     release.credits
