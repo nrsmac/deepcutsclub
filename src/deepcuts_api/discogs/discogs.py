@@ -59,48 +59,61 @@ def get_discogs_client() -> discogs_client.Client:
 
 
 def _get_main_release_id(client, title, artist, per_page):
-    results = client.search(query=title, artist=artist, type="master", sort="year", order="asc", per_page=per_page)
-    release_title = f"{artist} - {title}"
-
+    results = client.search(
+        release_title=title, artist=artist, type="master", sort="year", order="desc", per_page=per_page
+    )
     for release in results:
-        if release.title == release_title:
-            master = release.main_release
-            log.info(f"Found release: {release_title}: {master.id=}")
-            return master.id
-        log.debug(f"Skipping release: {release.title}")
+        if release.main_release.title == title:
+            log.info(f"Found release {release.title} ({release.main_release.id})")
+            return release.main_release.id
+        log.debug(f"Skipping release {release.title} ({release.main_release.id})")
+
     raise ValueError(f"Release not found for {title} by {artist}")
 
 
-def search_for_release(title: str, artist: str, per_page: int = 20) -> Album:
+def search_for_release(title: str, artist: str | None = None, per_page: int = 20) -> Album:
     """Search for a release on Discogs."""
     client = get_discogs_client()
     release_id = _get_main_release_id(client, title, artist, per_page)
-    _release = client.release(id=str(release_id))
+    release = client.release(id=str(release_id))
 
     start_time = time.time()
     album = Album(
-        title=_release.title,
+        title=release.title,
         artist_name=artist,
         discogs_release_id=release_id,
-        image_url=_release.images[0]["uri"],
-        credit_artist_ids=[artist.id for artist in _release.credits],
+        image_url=release.images[0]["uri"],
+        credit_artist_ids=[artist.id for artist in release.credits],
     )
     end_time = time.time()
-    log.info(f"Fetched release info for {_release.id} in {end_time - start_time:.2f} seconds")
+    log.info(f"Fetched release info for {title} ({release.id}) in {end_time - start_time:.2f} seconds")
 
     return album
 
 
-def get_release_credits(release_id: int) -> list[Artist]:  # TODO make this accept release objects and print name
+def get_release_credits(release_id: int) -> dict[str, Artist]:  # TODO make this accept release objects and print name
     client = get_discogs_client()
     release = client.release(str(release_id))
-    release.credits
-    log.info(f"Found {len(release.credits)} credits for release {release_id}")
-    artists = []
+    log.info(f"Found {len(release.credits)} credits for release {release.title} ({release_id=})")
+    artists = {}
     for artist in release.credits:
         image_url = artist.images[0]["uri"] if artist.images else None
-        artists.append(Artist(name=artist.name, discogs_artist_id=artist.id, image_url=image_url, role=artist.role))
+        artists[artist.id] = Artist(
+            name=artist.name, discogs_artist_id=artist.id, image_url=image_url, role=artist.role
+        )
     return artists
+
+
+def get_artist_albums(artist_id: int) -> list[Album]:
+    client = get_discogs_client()
+    artist = client.artist(artist_id)
+    log.info(f"Found {len(artist.releases)} releases for artist {artist.name} ({artist_id=})")
+    albums = []
+    for i, release in enumerate(artist.releases):
+        albums.append(Album(title=release.title, artist_name=artist.name, discogs_release_id=release.id))
+        if i == 1000:
+            break
+    return albums
 
 
 def save_my_albums(filename: str):
@@ -114,33 +127,29 @@ def save_my_albums(filename: str):
         ("The College Dropout", "Kanye West"),
         ("The Chronic", "Dr. Dre"),
         ("The Marshall Mathers LP", "Eminem"),
-        ("Miseducation of Lauryn Hill", "Lauryn Hill"),
-        ("The Slim Shady LP", "Eminem"),
-        # ("Thriller", "Michael Jackson"),
+        ("The Miseducation of Lauryn Hill", "Lauryn Hill"),
         ("Tread", "Ross From Friends"),
         ("Turn On The Bright Lights", "Interpol"),
-        ("Either/Or", "Elliott Smith"),
+        ("Either / Or", "Elliott Smith"),
         ("Kid A", "Radiohead"),
         ("Capacity", "Big Thief"),
         ("The Idler Wheel...", "Fiona Apple"),
         ("The ArchAndroid", "Janelle Monáe"),
         ("Dragon New Warm Mountain I Believe In You", "Big Thief"),
         ("The Suburbs", "Arcade Fire"),
-        ("Jazzbusters", "Connann Mockasin"),
+        ("Jassbusters", "Connann Mockasin"),
         ("Bravado", "Kirin J Callinan"),
         ("Con Todo El Mundo", "Khruangbin"),
-        ("Born Like This", "MF DOOM"),
         ("Donuts", "J Dilla"),
         ("It Is What It Is", "Thundercat"),
         ("Homogenic", "Björk"),
         ("Voodoo", "D'Angelo"),
-        # ("Destiny", "The Jacksons"),
         ("Fatigue", "L'Rain"),
         ("Grinning Cat", "Susumu Yokota"),
         ("Metaphorical Music", "Nujabes"),
         ("Modal Soul", "Nujabes"),
         ("Spiritual State", "Nujabes"),
-        ("Klxuds", "Knxwledge"),
+        ("BRAT", "Charlie XCX"),
     ]:
         try:
             my_collection.append(search_for_release(title, artist))
@@ -150,6 +159,17 @@ def save_my_albums(filename: str):
 
     with open(filename, "wb") as handle:
         pickle.dump(my_collection, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        log.info(f"Saved {len(my_collection)} albums to {filename}")
+
+
+def get_artist_albums_by_artist_id(artist_id: int):
+    client = get_discogs_client()
+    artist = client.artist(artist_id)
+    log.info(f"Found {len(artist.releases)} releases for artist {artist.name} ({artist_id=})")
+    albums = []
+    for release in artist.releases:
+        albums.append(Album(title=release.title, artist_name=artist.name, discogs_release_id=release.id))
+    return albums
 
 
 if __name__ == "__main__":

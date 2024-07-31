@@ -26,6 +26,7 @@ version = { file = "version.txt" }
 api = ["uvicorn"]
 test = ["pytest", "pytest-cov", "pendulum"]
 release = ["build", "twine"]
+frontend = ["streamlit", "matplotlib", "networkx", "streamlit-image-select"]
 static-code-qa = [
     "pre-commit",
     "pylint",
@@ -43,7 +44,7 @@ static-code-qa = [
 # - show enhanced autocompletion for stubs libraries
 # See .vscode/settings.json to see how VS Code is configured to use these tools
 dev = [
-    "deepcuts-api[test,release,static-code-qa,stubs,notebooks,api]",
+    "deepcuts-api[test,release,static-code-qa,stubs,notebooks,api]","watchdog"
 ] # Union, references test, release, static-code-qa
 
 [build-system]
