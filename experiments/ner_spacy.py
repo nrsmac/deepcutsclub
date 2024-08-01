@@ -6,9 +6,7 @@ nlp = spacy.load("en_core_web_sm")
 
 
 def fetch_wikipedia_content(artist_name):
-    wiki_api = wikipediaapi.Wikipedia(
-        language="en", user_agent="DeepCutsClub (noahrschill@gmail.com)"
-    )
+    wiki_api = wikipediaapi.Wikipedia(language="en", user_agent="DeepCutsClub (noahrschill@gmail.com)")
     page = wiki_api.page(artist_name)
     if not page.exists():
         return None

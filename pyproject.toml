@@ -1,23 +1,108 @@
-[tool.poetry]
-name = "deepcutsclub"
-version = "0.1.0"
-description = ""
-authors = ["Noah Schill <noahrschill@gmail.com>"]
+############################
+# --- Package Settings --- #
+############################
+
+[project]
+name = "deepcuts-api"
+description = "An API for accessing music metadata and recommendations"
+authors = [{ name = "Noah Schill", email = "noahrschill@gmail.com" }]
 readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+# TODO group deps by feature
+dependencies = ["fastapi", "matplotlib", "plotly", "pendulum","loguru", "networkx", "pydantic-settings", "spotipy", "wikipedia-api", "scikit-learn", "pandas", "spacy", "python3-discogs-client"]
+classifiers = ["Programming Language :: Python :: 3"]
+keywords = ["one", "two"]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-pydantic = "^2.8.2"
-fastapi = "^0.111.1"
-Wikipedia-API = "^0.6.0"
-spacy = "^3.7.5"
+# version will be derived dynamically from version.txt via setuptools
+dynamic = ["version"]
 
-[tool.poetry.group.dev.dependencies]
-ipython = "^8.26.0"
+# docs: https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#dynamic-metadata
+[tool.setuptools.dynamic]
+version = { file = "version.txt" }
 
-[tool.poetry.group.test.dependencies]
-pytest = "^8.3.1"
+# optional dependencies can be installed with square brackets, e.g. `pip install my-package[test,static-code-qa]`
+[project.optional-dependencies]
+api = ["uvicorn"]
+test = ["pytest", "pytest-cov", "pendulum"]
+release = ["build", "twine"]
+frontend = ["streamlit", "matplotlib", "networkx", "streamlit-image-select"]
+static-code-qa = [
+    "pre-commit",
+    "pylint",
+    "black",
+    "isort",
+    "flake8",
+    "flake8-docstrings",
+    "Flake8-pyproject",
+    "radon",
+    "rope",
+]
+# Installing dev dependencies in your virtual env makes it so that during development VS Code can
+# - surface linting errors
+# - automatically apply formatting
+# - show enhanced autocompletion for stubs libraries
+# See .vscode/settings.json to see how VS Code is configured to use these tools
+dev = [
+    "deepcuts-api[test,release,static-code-qa,stubs,notebooks,api]","watchdog"
+] # Union, references test, release, static-code-qa
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+# Minimum requirements for the build system to execute.
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# include more than only .py files in the distribution package (wheel)
+[tool.setuptools.package-data]
+deepcuts_api = ["*.json"]
+
+
+##############################
+# --- Code Quality Tools --- #
+##############################
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+] # Add @slow decorator for long-running tests
+
+[tool.black]
+line-length = 119
+# regular expression ignoring multiple patterns separated by '|' and newlines
+exclude = '''
+/(
+    \.venv
+  | venv
+)/
+'''
+
+[tool.flake8]
+docstring-convention = "all"
+ignore = ["D107", "D212", "E501", "W503", "W605", "D203", "D100"]
+exclude = ["venv", "experiments/*"]
+max-line-length = 119
+# radon, flake8 plugin that allows us to check for 'cyclimatic code complexity'
+radon-max-cc = 10
+
+[tool.mypy]
+exclude = ["experiments"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = "VERTICAL_HANGING_INDENT"
+force_grid_wrap = 2
+line_length = 119
+
+[tool.pylint]
+ignore-paths = ["experiments"]
+
+[tool.pylint."messages control"]
+disable = [
+    "line-too-long",
+    "trailing-whitespace",
+    "missing-function-docstring",
+    "consider-using-f-string",
+    "import-error",
+    "too-few-public-methods",
+    "redefined-outer-name",
+]
