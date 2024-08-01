@@ -15,7 +15,7 @@ from deepcuts_api.schemas import (
     GetRecommendationResponse,
 )
 
-ROUTER = APIRouter(tags=["Files"])
+ROUTER = APIRouter(tags=["deepcuts"])
 
 
 @ROUTER.get(
