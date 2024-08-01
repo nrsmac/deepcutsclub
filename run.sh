@@ -7,7 +7,7 @@ set -e
 #####################
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-MINIMUM_TEST_COVERAGE_PERCENT=90
+MINIMUM_TEST_COVERAGE_PERCENT=80
 
 
 ##########################

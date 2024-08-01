@@ -18,5 +18,5 @@ sys.path.insert(0, str(TESTS_DIR_PARENT))
 pytest_plugins = [
     # e.g. "tests/fixtures/example_fixture.py" should be registered as:
     "tests.fixtures.api_client",
-    "tests.fixtures.mock_spotify",
+    "tests.fixtures.spotify_client",
 ]
