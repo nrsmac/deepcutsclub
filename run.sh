@@ -21,20 +21,31 @@ function install {
 }
 
 # Auto-generate an SDK from the OpenAPI spec
-function generate-client-library {
+function generate-python-client-library {
     docker run --rm \
         -v ${PWD}:/local openapitools/openapi-generator-cli generate \
         --generator-name python-pydantic-v1 \
         --input-spec /local/openapi.json \
-        --output /local/deepcuts-sdk \
+        --output /local/sdk/python \
         --package-name deepcuts_sdk
+        # --npm-name deepcuts
 }
 
-function install-generated-sdk {
+function generate-typescript-client-library {
+    docker run --rm \
+        -v ${PWD}:/local openapitools/openapi-generator-cli generate \
+        --generator-name typescript-fetch  \
+        --input-spec /local/openapi.json \
+        --package-name deepcuts_sdk\
+        --output /local/sdk/typescript
+
+}
+
+function install-python-sdk {
     # setting editable_mode=strict fixes an issue with autocompletion
     # in VS Code when installing editable packages. See:
     # https://github.com/microsoft/pylance-release/issues/3473
-    python -m pip install --editable "$THIS_DIR/deepcuts-sdk" \
+    python -m pip install --editable "$THIS_DIR/sdk/python/" \
         --config-settings editable_mode=strict
 }
 

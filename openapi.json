@@ -131,6 +131,17 @@
             ],
             "title": "Spotify Id"
           },
+          "spotify_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spotify Url"
+          },
           "discogs_release_id": {
             "anyOf": [
               {
