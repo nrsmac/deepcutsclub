@@ -1,6 +1,8 @@
 # Python .gitignore template from
 # https://github.com/github/gitignore/blob/main/Python.gitignore
 
+# Ignore all DS_Store files
+**/.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
