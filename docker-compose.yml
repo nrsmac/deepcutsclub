@@ -1,0 +1,18 @@
+services:
+  deepcuts-api:
+    container_name: deepcuts-api
+    build:
+      context: .
+      dockerfile: Dockerfile_api
+    ports:
+      - "8000:8000"
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+  frontend:
+    container_name: deepcuts
+    build:
+      context: .
+      dockerfile: Dockerfile_api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - deepcuts-api

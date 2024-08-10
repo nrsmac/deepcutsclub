@@ -13,11 +13,14 @@ run-mock:
 build:
 	bash run.sh build
 
-generate-client-library:
-	bash run.sh generate-client-library
+generate-python-client-library:
+	bash run.sh generate-python-client-library
 
-install-generated-sdk:
-	bash run.sh install-generated-sdk
+generate-typescript-client-library:
+	bash run.sh generate-typescript-client-library
+
+install-python-sdk:
+	bash run.sh install-python-sdk
 
 clean:
 	bash run.sh clean

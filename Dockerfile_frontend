@@ -1,0 +1,19 @@
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+RUN pip install pip-tools
+
+# Install SDK from sdk/python
+COPY sdk/python/* ./sdk
+
+RUN python -m pip install --editable ./sdk \
+        --config-settings editable_mode=strict
+
+# Install dependencies
+COPY src/deepcuts/* .
+
+
+CMD ["streamlit", "run", "app.py", "--server.port", "80", "--server.host", "0.0.0.0"]
+
+EXPOSE 80

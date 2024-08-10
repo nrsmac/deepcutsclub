@@ -3,6 +3,7 @@
 import pydantic
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
+from mangum import Mangum
 
 from deepcuts_api.errors import (
     handle_broad_exceptions,
@@ -46,3 +47,6 @@ if __name__ == "__main__":
 
     app: FastAPI = create_app()
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+    app = create_app()
+    handler = Mangum(app)

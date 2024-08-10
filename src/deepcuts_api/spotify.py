@@ -48,7 +48,7 @@ def get_albums_by_artist(artist_name: str, limit: int = 20) -> list[Album]:
             albums.append(
                 Album(
                     title=album["name"],
-                    artist_name=artist_name,
+                    artist_name=album["artists"][0]["name"],
                     spotify_id=album["id"],
                     image_url=album["images"][0]["url"],
                 )
@@ -106,6 +106,7 @@ def get_recommendations(artists: list[Artist], albums: list[Album], genres: list
                 title=recommendation["album"]["name"],
                 artist_name=recommendation["album"]["artists"][0]["name"],
                 spotify_id=recommendation["album"]["id"],
+                spotify_url=recommendation["album"]["external_urls"]["spotify"],
                 image_url=recommendation["album"]["images"][0]["url"],
             )
         )

@@ -9,11 +9,11 @@
     "/albums/{artist_name}": {
       "get": {
         "tags": [
-          "Files"
+          "deepcuts"
         ],
-        "summary": "Get Album",
+        "summary": "Get Albums By Artist",
         "description": "Get albums by artist name.",
-        "operationId": "Files-get_album",
+        "operationId": "deepcuts-get_albums_by_artist",
         "parameters": [
           {
             "name": "artist_name",
@@ -31,10 +31,61 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetAlbumsResponse"
+                  "$ref": "#/components/schemas/GetArtistAlbumsResponse"
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recommend": {
+      "post": {
+        "tags": [
+          "deepcuts"
+        ],
+        "summary": "Recommend Albums From Albums",
+        "description": "Recommend albums based on shared artists.",
+        "operationId": "deepcuts-recommend_albums_from_albums",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_deepcuts-recommend_albums_from_albums"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRecommendationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           },
           "422": {
             "description": "Validation Error",
@@ -54,78 +105,267 @@
     "schemas": {
       "Album": {
         "properties": {
-          "name": {
+          "title": {
             "type": "string",
-            "title": "Name"
+            "title": "Title"
           },
-          "artists": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Artists"
+          "artist_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artist Name"
           },
-          "release_date": {
-            "type": "string",
-            "title": "Release Date"
-          },
-          "total_tracks": {
-            "type": "integer",
-            "title": "Total Tracks"
-          },
-          "tracks": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Tracks"
-          },
-          "image": {
-            "$ref": "#/components/schemas/AlbumImageMetadata"
+          "spotify_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spotify Id"
           },
           "spotify_url": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Spotify Url"
+          },
+          "discogs_release_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discogs Release Id"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "credit_artist_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Credit Artist Ids",
+            "default": []
           }
         },
         "type": "object",
         "required": [
-          "name",
-          "artists",
-          "release_date",
-          "total_tracks",
-          "tracks",
-          "image",
-          "spotify_url"
+          "title"
         ],
         "title": "Album",
         "description": "Schema for an album."
       },
-      "AlbumImageMetadata": {
+      "Body_deepcuts-recommend_albums_from_albums": {
         "properties": {
-          "height": {
-            "type": "integer",
-            "title": "Height"
+          "album_titles": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Album Titles"
           },
-          "width": {
-            "type": "integer",
-            "title": "Width"
+          "artist_names": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Artist Names"
           },
-          "url": {
-            "type": "string",
-            "title": "Url"
+          "genres": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Genre"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Genres"
           }
         },
         "type": "object",
         "required": [
-          "height",
-          "width",
-          "url"
+          "album_titles",
+          "artist_names"
         ],
-        "title": "AlbumImageMetadata",
-        "description": "Schema for album image metadata."
+        "title": "Body_deepcuts-recommend_albums_from_albums"
       },
-      "GetAlbumsResponse": {
+      "Genre": {
+        "type": "string",
+        "enum": [
+          "acoustic",
+          "afrobeat",
+          "alt-rock",
+          "alternative",
+          "ambient",
+          "anime",
+          "black-metal",
+          "bluegrass",
+          "blues",
+          "bossanova",
+          "brazil",
+          "breakbeat",
+          "british",
+          "cantopop",
+          "chicago-house",
+          "children",
+          "chill",
+          "classical",
+          "club",
+          "comedy",
+          "country",
+          "dance",
+          "dancehall",
+          "death-metal",
+          "deep-house",
+          "detroit-techno",
+          "disco",
+          "disney",
+          "drum-and-bass",
+          "dub",
+          "dubstep",
+          "edm",
+          "electro",
+          "electronic",
+          "emo",
+          "folk",
+          "forro",
+          "french",
+          "funk",
+          "garage",
+          "german",
+          "gospel",
+          "goth",
+          "grindcore",
+          "groove",
+          "grunge",
+          "guitar",
+          "happy",
+          "hard-rock",
+          "hardcore",
+          "hardstyle",
+          "heavy-metal",
+          "hip-hop",
+          "holidays",
+          "honky-tonk",
+          "House",
+          "idm",
+          "indian",
+          "indie",
+          "indie-pop",
+          "industrial",
+          "iranian",
+          "j-dance",
+          "j-idol",
+          "j-pop",
+          "j-rock",
+          "jazz",
+          "k-pop",
+          "kids",
+          "latin",
+          "latino",
+          "malay",
+          "mandopop",
+          "metal",
+          "metal-misc",
+          "metalcore",
+          "minimal-techno",
+          "movies",
+          "mpb",
+          "new-age",
+          "new-release",
+          "opera",
+          "pagode",
+          "party",
+          "philippines-opm",
+          "piano",
+          "pop",
+          "pop-film",
+          "post-dubstep",
+          "power-pop",
+          "progressive-house",
+          "psych-rock",
+          "punk",
+          "punk-rock",
+          "r-n-b",
+          "rainy-day",
+          "reggae",
+          "reggaeton",
+          "road-trip",
+          "rock",
+          "rock-n-roll",
+          "rockabilly",
+          "romance",
+          "sad",
+          "salsa",
+          "samba",
+          "sertanejo",
+          "show-tunes",
+          "singer-songwriter",
+          "ska",
+          "sleep",
+          "songwriter",
+          "SOul",
+          "soundtracks",
+          "spanish",
+          "study",
+          "summer",
+          "swedish",
+          "synth-pop",
+          "tango",
+          "techno",
+          "trance",
+          "trip-hop",
+          "turkish",
+          "work-out",
+          "world-music"
+        ],
+        "title": "Genre",
+        "description": "Available genres."
+      },
+      "GetArtistAlbumsResponse": {
         "properties": {
           "albums": {
             "items": {
@@ -139,8 +379,25 @@
         "required": [
           "albums"
         ],
-        "title": "GetAlbumsResponse",
+        "title": "GetArtistAlbumsResponse",
         "description": "Schema for an album_response."
+      },
+      "GetRecommendationResponse": {
+        "properties": {
+          "albums": {
+            "items": {
+              "$ref": "#/components/schemas/Album"
+            },
+            "type": "array",
+            "title": "Albums"
+          }
+        },
+        "type": "object",
+        "required": [
+          "albums"
+        ],
+        "title": "GetRecommendationResponse",
+        "description": "Schema for a recommendation response."
       },
       "HTTPValidationError": {
         "properties": {

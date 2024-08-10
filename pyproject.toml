@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 # TODO group deps by feature
-dependencies = ["fastapi", "matplotlib", "plotly", "pendulum","loguru", "networkx", "pydantic-settings", "spotipy", "wikipedia-api", "scikit-learn", "pandas", "spacy", "python3-discogs-client"]
+dependencies = ["fastapi", "uvicorn", "mangum", "pendulum","loguru", "pydantic-settings", "spotipy", "wikipedia-api", "python3-discogs-client"]
 classifiers = ["Programming Language :: Python :: 3"]
 keywords = ["one", "two"]
 
@@ -23,10 +23,10 @@ version = { file = "version.txt" }
 
 # optional dependencies can be installed with square brackets, e.g. `pip install my-package[test,static-code-qa]`
 [project.optional-dependencies]
-api = ["uvicorn"]
+api = ["uvicorn", "mangum"]
 test = ["pytest", "pytest-cov", "pendulum"]
 release = ["build", "twine"]
-frontend = ["streamlit", "matplotlib", "networkx", "streamlit-image-select"]
+frontend = ["streamlit", "streamlit-image-select"]
 static-code-qa = [
     "pre-commit",
     "pylint",

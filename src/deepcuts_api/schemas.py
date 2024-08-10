@@ -13,6 +13,7 @@ class Album(BaseModel):
     title: str
     artist_name: str | None = None
     spotify_id: str | None = None
+    spotify_url: str | None = None
     discogs_release_id: int | None = None
     image_url: str | None = None
     credit_artist_ids: list[int] = []  # List of album credits
