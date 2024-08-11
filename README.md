@@ -1,4 +1,4 @@
 # deepcutsclub
 ![badge](https://github.com/nrsmac/deepcutsclub/actions/workflows/build-test-publish.yaml/badge.svg)
 
-Hone your deepest cuts and find new connections with your music library.
+Share your songs and albums with friends, no matter what platform! 
